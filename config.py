@@ -1,9 +1,10 @@
+from typing import Union, Dict, List
 from configparser import ConfigParser
 
 CFG_FILENAME = 'config.ini'
 
 
-def get_configs(section: str) -> dict[str, int | str | list[str]]:
+def get_configs(section: str) -> Dict[str, Union[int, str, List[str]]]:
     config_dict = dict()
     necessary_params = {
         'port': int,
