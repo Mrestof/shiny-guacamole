@@ -6,6 +6,8 @@ CFG_FILENAME = 'config.ini'
 
 def get_configs(section: str) -> Dict[str, Union[int, str, List[str]]]:
     config_dict = dict()
+    # TODO: guard the transformation functions (ex. if `port` is "some text")
+    #       + check parameter syntax (ex `ip` is "d.d.d.d", not something else)
     necessary_params = {
         'port': int,
         'listen_address': str,
