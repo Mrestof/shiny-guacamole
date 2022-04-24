@@ -8,7 +8,7 @@
 import socket
 from cfg.loader import get_configs
 
-config = get_configs('test')
+config = get_configs('cfg/test.ini')
 
 with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as tx_sock:
     print('##start test')

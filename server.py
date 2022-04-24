@@ -7,7 +7,7 @@
 import socket
 from cfg.loader import get_configs
 
-config = get_configs('test')
+config = get_configs('cfg/test.ini')
 
 with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as listen_socket:
     listen_socket.bind((config['listen_address'], config['port']))
