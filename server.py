@@ -5,7 +5,7 @@
 #       - name of the config to load
 #       - number of entire code cycle repeats
 import socket
-from config import get_configs
+from cfg.loader import get_configs
 
 config = get_configs('test')
 

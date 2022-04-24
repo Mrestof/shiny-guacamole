@@ -6,7 +6,7 @@
 #       - list of tests to accomplish
 # TODO: make test not relying on `data_rows` config (by sending as many packets as server allows)
 import socket
-from config import get_configs
+from cfg.loader import get_configs
 
 config = get_configs('test')
 
