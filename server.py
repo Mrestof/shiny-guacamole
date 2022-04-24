@@ -1,7 +1,9 @@
-# TODO: [global] catch all possible and not possible exceptions
-# TODO: replace print with varying levels of logging
+# TODO: [global] replace print with varying levels of logging
+# TODO: catch all possible and not possible exceptions
 # TODO: set the socket timeouts by hand
-# TODO: structure the code a bit more fine
+# TODO: add command line parameters:
+#       - name of the config to load
+#       - number of entire code cycle repeats
 import socket
 from config import get_configs
 

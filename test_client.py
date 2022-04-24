@@ -1,4 +1,9 @@
-# TODO: test to connect with forbidden address
+# TODO: cover the code with exceptions
+# TODO: expand the test:
+#       - test to connect with forbidden address
+#       - test to overtime the connection
+# TODO: add command line parameters:
+#       - list of tests to accomplish
 # TODO: make test not relying on `data_rows` config (by sending as many packets as server allows)
 import socket
 from config import get_configs
