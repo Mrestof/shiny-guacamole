@@ -33,4 +33,4 @@ Listen for incoming packets. Based on info about sender and data in package resp
 - [ ] make test not relying on `data_rows` config (by sending as many packets as server allows)
 ### configs:
 - [x] refactor the storage method of configs
-- [ ] ensure the passed configs are in correct form
+- [x] ensure the passed configs are in correct form
