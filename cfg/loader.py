@@ -33,8 +33,12 @@ def data_rows_guard(conf_value: str) -> List[bytes]:
     """Check and transform the string data_rows value to the list of bytes one"""
     data_rows = list()
     for data_row in conf_value.splitlines():
-        # TODO: discuss the input data format (it will make it clear how to check this config value)
-        data_rows.append(data_row.encode())
+        try:
+            data_row_bin = bytes.fromhex(data_row)
+        except ValueError:
+            print(f'!!the passed {data_row=} from `data_rows` is corrupted, check your configs and try again')
+            raise
+        data_rows.append(data_row_bin)
     return data_rows
 
 

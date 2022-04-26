@@ -34,3 +34,4 @@ Listen for incoming packets. Based on info about sender and data in package resp
 ### configs:
 - [x] refactor the storage method of configs
 - [x] ensure the passed configs are in correct form
+- [x] change `data_rows` values format
