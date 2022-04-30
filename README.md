@@ -15,6 +15,7 @@ Listen for incoming packets. Based on info about sender and data in package resp
 ## TODO
 ### global:
 - [x] make working prototype
+  - [ ] fix behaviour
 - [ ] cover the whole code with exceptions
 - [ ] replace print with varying levels of logging
 ### server:
