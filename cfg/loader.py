@@ -29,16 +29,33 @@ def listen_address_guard(conf_value: str) -> str:
     return conf_value
 
 
-def data_rows_guard(conf_value: str) -> List[bytes]:
-    """Check and transform the string data_rows value to the list of bytes one"""
-    data_rows = list()
+def handshake_guard(conf_value: str) -> Dict[bytes, bytes]:
+    """Check and transform the string handshake value to the dict of responses in bytes"""
+    handshake_pair = dict()
+    try:
+        data_in, data_out = conf_value.split(':')
+        data_in_bin, data_out_bin = bytes.fromhex(data_in), bytes.fromhex(data_out)
+        handshake_pair[data_in_bin] = data_out_bin
+    except ValueError:
+        print(f'!!the passed {handshake_pair=} from `handshake` is corrupted, check your configs and try again')
+        raise
+    return handshake_pair
+
+
+def data_rows_guard(conf_value: str) -> Dict[bytes, List[bytes]]:
+    """Check and transform the string data_rows value to the dict of responses in bytes"""
+    data_rows = dict()
     for data_row in conf_value.splitlines():
         try:
-            data_row_bin = bytes.fromhex(data_row)
+            data_in, data_out = data_row.split(':')
+            data_in_bin = bytes.fromhex(data_in)
+            data_out_bin = list()
+            for data_out_part in data_out.split(','):
+                data_out_bin.append(bytes.fromhex(data_out_part))
         except ValueError:
             print(f'!!the passed {data_row=} from `data_rows` is corrupted, check your configs and try again')
             raise
-        data_rows.append(data_row_bin)
+        data_rows[data_in_bin] = data_out_bin
     return data_rows
 
 
@@ -56,12 +73,13 @@ def allowed_hosts_guard(conf_value: str) -> List[str]:
     return allowed_hosts
 
 
-def get_configs(cfg_filename: str) -> Dict[str, Union[int, str, List[str]]]:
+def get_configs(cfg_filename: str) -> Dict[str, Union[int, str, List[str], Dict[bytes, Union[bytes, List[bytes]]]]]:
     assert isfile(cfg_filename), f'!!config with filename {cfg_filename} is not found'
     config_dict = dict()
     necessary_params = {
         'port': port_guard,
         'listen_address': listen_address_guard,
+        'handshake': handshake_guard,
         'data_rows': data_rows_guard,
         'allowed_hosts': allowed_hosts_guard,
     }
