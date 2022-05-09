@@ -1,6 +1,6 @@
 from os.path import isfile
 from socket import inet_pton, AF_INET
-from typing import Union, Dict, List, Tuple
+from typing import Dict, List, Tuple, Any
 from configparser import ConfigParser
 
 CFG_DEF_SECT = 'main'
@@ -11,9 +11,8 @@ def port_guard(conf_value: str) -> int:
     try:
         port = int(conf_value)
     except ValueError:
-        print(f'!!port must be an integer, passed value is {conf_value}')
-        raise
-    assert 2**10 < port < 2**16, '!!port is in dangerous or forbidden range'
+        raise SystemExit(f'!!port must be an integer, passed value is {conf_value}')
+    assert 2**10 < port < 2**16, '!!port is in dangerous or is in forbidden range'
     return port
 
 
@@ -24,8 +23,7 @@ def listen_address_guard(conf_value: str) -> str:
     try:
         inet_pton(AF_INET, conf_value)
     except OSError:
-        print(f'!!listen address must be a full IPv4 formatted string, passed value is {conf_value}')
-        raise
+        raise SystemExit(f'!!listen address must be a full IPv4 formatted string, passed value is {conf_value}')
     return conf_value
 
 
@@ -37,8 +35,8 @@ def handshake_guard(conf_value: str) -> Tuple[bytes, bytes]:
         data_in_bin, data_out_bin = bytes.fromhex(data_in), bytes.fromhex(data_out)
         handshake_pair = data_in_bin, data_out_bin
     except ValueError:
-        print(f'!!the passed {handshake_pair=} from `handshake` is corrupted, check your configs and try again')
-        raise
+        raise SystemExit(f'!!the passed {handshake_pair=} from `handshake` is corrupted, '
+                         'check your configs and try again')
     return handshake_pair
 
 
@@ -53,8 +51,8 @@ def data_rows_guard(conf_value: str) -> Dict[bytes, List[bytes]]:
             for data_out_part in data_out.split(','):
                 data_out_bin.append(bytes.fromhex(data_out_part))
         except ValueError:
-            print(f'!!the passed {data_row=} from `data_rows` is corrupted, check your configs and try again')
-            raise
+            raise SystemExit(f'!!the passed {data_row=} from `data_rows` is corrupted, '
+                             'check your configs and try again')
         data_rows[data_in_bin] = data_out_bin
     return data_rows
 
@@ -67,13 +65,12 @@ def allowed_hosts_guard(conf_value: str) -> List[str]:
             inet_pton(AF_INET, host)
             allowed_hosts.append(host)
         except OSError:
-            print(f'!!ip address must be a full IPv4 formatted string, '
-                  f'passed value which triggered the error is {conf_value}')
-            raise
+            raise SystemExit('!!ip address must be a full IPv4 formatted string, '
+                             f'passed value which triggered the error is {host}')
     return allowed_hosts
 
 
-def get_configs(cfg_filename: str) -> Dict[str, Union[int, str, List[str], Tuple[bytes, bytes], Dict[bytes, List[bytes]]]]:
+def get_configs(cfg_filename: str) -> Dict[str, Any]:
     assert isfile(cfg_filename), f'!!config with filename {cfg_filename} is not found'
     config_dict = dict()
     necessary_params = {
@@ -90,15 +87,13 @@ def get_configs(cfg_filename: str) -> Dict[str, Union[int, str, List[str], Tuple
     try:
         config_params = config[CFG_DEF_SECT]
     except KeyError:
-        print(f'!!section {CFG_DEF_SECT} was not found in {cfg_filename}')
-        raise
+        raise SystemError(f'!!section {CFG_DEF_SECT} was not found in {cfg_filename}')
 
     try:
         for param_name, param_guard in necessary_params.items():
             config_dict[param_name] = param_guard(config_params[param_name])
     except KeyError as ke:
-        print(f'!!necessary param {ke} in section {CFG_DEF_SECT} was not found in {cfg_filename}')
-        raise
+        raise SystemError(f'!!necessary param {ke} in section {CFG_DEF_SECT} was not found in {cfg_filename}')
 
     return config_dict
 
