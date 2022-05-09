@@ -5,6 +5,7 @@
 #       - name of the config to load
 #       - number of entire code cycle repeats
 import socket
+from time import sleep
 from cfg.loader import get_configs
 
 config = get_configs('cfg/test.ini')
@@ -41,7 +42,9 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as listen_socket:
                     print(f'##no replies found in config')
                     continue
                 for reply in config['data_rows'][recv_data]:
+                    print('##sleep for 300ms')
+                    sleep(0.3)
                     client_socket.sendall(reply)  # might throw the errno32 broken pipe
-                    print(f'->"{reply }" sent to the client')
+                    print(f'->"{reply}" sent to the client')
             break
     print('##stop the server')
