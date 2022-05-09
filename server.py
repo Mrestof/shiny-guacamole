@@ -24,10 +24,10 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as listen_socket:
             print('..listen for incoming handshake')
             potential_handshake = client_socket.recv(1024)
             print(f'<-"{potential_handshake} received potential handshake from the current connection')
-            if potential_handshake not in config['handshake']:
+            if potential_handshake != config['handshake'][0]:
                 print('!!reject handshake: it described differently in config')
                 continue
-            handshake_response = config['handshake'][potential_handshake]
+            handshake_response = config['handshake'][1]
             client_socket.sendall(handshake_response)
             print(f'->"{handshake_response}" send handshake response')
             while True:

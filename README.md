@@ -32,7 +32,7 @@ Listen for incoming packets. Based on info about sender and data in package resp
   - [ ] test to overtime the connection
 - [ ] add command line parameters
   - [ ] list of tests to accomplish
-- [ ] make test not relying on `data_rows` config (by sending as many packets as server allows)
+- [ ] add command line prompt to execute tests in interactive way
 ### configs:
 - [x] refactor the storage method of configs
 - [x] ensure the passed configs are in correct form

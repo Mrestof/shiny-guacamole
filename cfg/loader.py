@@ -1,6 +1,6 @@
 from os.path import isfile
 from socket import inet_pton, AF_INET
-from typing import Union, Dict, List
+from typing import Union, Dict, List, Tuple
 from configparser import ConfigParser
 
 CFG_DEF_SECT = 'main'
@@ -29,13 +29,13 @@ def listen_address_guard(conf_value: str) -> str:
     return conf_value
 
 
-def handshake_guard(conf_value: str) -> Dict[bytes, bytes]:
-    """Check and transform the string handshake value to the dict of responses in bytes"""
-    handshake_pair = dict()
+def handshake_guard(conf_value: str) -> Tuple[bytes, bytes]:
+    """Check and transform the string handshake value to the tuple of response on specific handshake"""
+    handshake_pair = tuple()
     try:
         data_in, data_out = conf_value.split(':')
         data_in_bin, data_out_bin = bytes.fromhex(data_in), bytes.fromhex(data_out)
-        handshake_pair[data_in_bin] = data_out_bin
+        handshake_pair = data_in_bin, data_out_bin
     except ValueError:
         print(f'!!the passed {handshake_pair=} from `handshake` is corrupted, check your configs and try again')
         raise
@@ -73,7 +73,7 @@ def allowed_hosts_guard(conf_value: str) -> List[str]:
     return allowed_hosts
 
 
-def get_configs(cfg_filename: str) -> Dict[str, Union[int, str, List[str], Dict[bytes, Union[bytes, List[bytes]]]]]:
+def get_configs(cfg_filename: str) -> Dict[str, Union[int, str, List[str], Tuple[bytes, bytes], Dict[bytes, List[bytes]]]]:
     assert isfile(cfg_filename), f'!!config with filename {cfg_filename} is not found'
     config_dict = dict()
     necessary_params = {
