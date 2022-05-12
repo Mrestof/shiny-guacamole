@@ -1,4 +1,3 @@
-from os.path import isfile
 from socket import inet_pton, AF_INET
 from typing import Dict, List, Tuple, Any
 from configparser import ConfigParser
@@ -70,8 +69,9 @@ def allowed_hosts_guard(conf_value: str) -> List[str]:
     return allowed_hosts
 
 
+# TODO: change returned object type to something like dataclass
+#       reason: 'https://youtu.be/vCLetdhswMg?t=257'
 def get_configs(cfg_filename: str) -> Dict[str, Any]:
-    assert isfile(cfg_filename), f'!!config with filename {cfg_filename} is not found'
     config_dict = dict()
     necessary_params = {
         'port': port_guard,
@@ -80,21 +80,19 @@ def get_configs(cfg_filename: str) -> Dict[str, Any]:
         'data_rows': data_rows_guard,
         'allowed_hosts': allowed_hosts_guard,
     }
-
     config = ConfigParser()
-    config.read(cfg_filename)
-
     try:
+        config.read_file(open(cfg_filename))
         config_params = config[CFG_DEF_SECT]
+    except FileNotFoundError:
+        raise SystemExit(f'!!config with filename {cfg_filename!r} is not found')
     except KeyError:
-        raise SystemError(f'!!section {CFG_DEF_SECT} was not found in {cfg_filename}')
-
+        raise SystemExit(f'!!section {CFG_DEF_SECT} was not found in {cfg_filename!r}')
     try:
         for param_name, param_guard in necessary_params.items():
             config_dict[param_name] = param_guard(config_params[param_name])
     except KeyError as ke:
-        raise SystemError(f'!!necessary param {ke} in section {CFG_DEF_SECT} was not found in {cfg_filename}')
-
+        raise SystemExit(f'!!necessary param {ke} in section {CFG_DEF_SECT} was not found in {cfg_filename!r}')
     return config_dict
 
 
