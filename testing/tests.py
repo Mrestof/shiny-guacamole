@@ -3,12 +3,10 @@
 #       - test to connect with forbidden address
 #       - test to overtime the connection
 import socket
-from cfg.loader import get_configs
-
-config = get_configs('cfg/test.ini')
+from typing import Dict, Any
 
 
-def full(server_addr: str = '127.0.0.1') -> bool:
+def full(config: Dict[str, Any], server_addr: str = '127.0.0.1') -> bool:
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as tx_sock:
         print('##start full test')
         host = server_addr, config['port']

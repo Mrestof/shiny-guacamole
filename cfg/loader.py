@@ -10,7 +10,7 @@ def port_guard(conf_value: str) -> int:
     try:
         port = int(conf_value)
     except ValueError:
-        raise SystemExit(f'!!port must be an integer, passed value is {conf_value}')
+        raise SystemExit(f'!!port must be an integer, passed value is {conf_value!r}')
     assert 2**10 < port < 2**16, '!!port is in dangerous or is in forbidden range'
     return port
 
@@ -22,7 +22,7 @@ def listen_address_guard(conf_value: str) -> str:
     try:
         inet_pton(AF_INET, conf_value)
     except OSError:
-        raise SystemExit(f'!!listen address must be a full IPv4 formatted string, passed value is {conf_value}')
+        raise SystemExit(f'!!listen address must be a full IPv4 formatted string, passed value is {conf_value!r}')
     return conf_value
 
 
