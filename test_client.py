@@ -17,10 +17,17 @@ class TCArgs:
 
 def get_args() -> TCArgs:
     args = TCArgs()
+    usage = (f'!!usage: {argv[0]!r} <config_name.ini> [test_functions_to_run_separated_by_space]',
+             '\t<config_name.ini>: full or relative path to the configuration file in dosini format\n'
+             '\t[test_functions_to_run_separated_by_space]: name(s) of test functions to run as separate arguments,'
+             ' repeating is allowed (ex. full part full full)')
     try:
+        if argv[1] == '--help':
+            print('\n'.join(usage))
+            raise SystemExit(0)
         args.config_filename = argv[1]
     except IndexError:
-        raise SystemExit(f'!!usage: {argv[0]!r} config_name.ini [test_functions_to_run_separated_by_space]')
+        raise SystemExit(usage[0])
     args.config_required_test_names = argv[2:]
     return args
 

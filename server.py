@@ -12,15 +12,18 @@ from cfg.loader import get_configs
 
 
 def parse_args() -> Tuple[Dict[str, Any], int]:
-    usage = f'usage: {argv[0]!r} [--help] <config_name.ini> [amount_of_clients_to_process]'
+    usage = (f'usage: {argv[0]!r} [--help] <config_name.ini> [amount_of_clients_to_process]',
+             '\t<config_name.ini>: full or relative path to the configuration file in dosini format\n'
+             '\t[amount_of_clients_to_process]: integer value to specify the amount of clients, which server processes'
+             ' until shutting down; if lower than 0 (ex. -1,-2..) run the server forever')
     try:
         if argv[1] == '--help':
-            print(usage)
-            exit(0)
+            print('\n'.join(usage))
+            raise SystemExit(0)
         # file existing is handled by `loader`
         config = get_configs(argv[1])
     except IndexError:
-        raise SystemExit(f'!!{usage}')
+        raise SystemExit(f'!!{usage[0]}')
     try:
         client_amount = int(argv[2])
     except IndexError:
