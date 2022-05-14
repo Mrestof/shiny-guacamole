@@ -1,17 +1,25 @@
 # TODO: [global] replace print with varying levels of logging
 # TODO: catch all possible and not possible exceptions
 # TODO: set the socket timeouts by hand
-# TODO: add command line parameters:
-#       - name of the config to load
-#       - number of entire code cycle repeats
 import socket
 from sys import argv
 from time import sleep
-from typing import Dict, Any, Tuple
+from typing import Dict, Any
+from dataclasses import dataclass, astuple
 from cfg.loader import get_configs
 
 
-def parse_args() -> Tuple[Dict[str, Any], int]:
+@dataclass
+class Args:
+    config: Dict[str, Any]
+
+
+@dataclass
+class SArgs(Args):
+    client_amount: int
+
+
+def parse_args() -> SArgs:
     usage = (f'usage: {argv[0]!r} [--help] <config_name.ini> [amount_of_clients_to_process]',
              '\t<config_name.ini>: full or relative path to the configuration file in dosini format\n'
              '\t[amount_of_clients_to_process]: integer value to specify the amount of clients, which server processes'
@@ -29,8 +37,8 @@ def parse_args() -> Tuple[Dict[str, Any], int]:
     except IndexError:
         client_amount = 1
     except ValueError:
-        raise SystemExit(f'!!passed {argv[2]!r} as the `amount_of_clients_to_process`, it must be an integer')
-    return config, client_amount
+        raise SystemExit(f'!!wrong value: passed {argv[2]!r} as the `amount_of_clients_to_process`, it must be integer')
+    return SArgs(config, client_amount)
 
 
 def process_client(config: Dict[str, Any]) -> None:
@@ -75,7 +83,7 @@ def process_client(config: Dict[str, Any]) -> None:
 
 
 def main() -> None:
-    config, client_amount = parse_args()
+    config, client_amount = astuple(parse_args())
     print('##start the server')
     while client_amount != 0:
         print('##process new client')

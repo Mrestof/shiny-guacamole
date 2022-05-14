@@ -8,7 +8,7 @@ from typing import Dict, Any
 
 def full(config: Dict[str, Any], server_addr: str = '127.0.0.1') -> bool:
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as tx_sock:
-        print('##start full test')
+        print('##start "full" test')
         host = server_addr, config['port']
         tx_sock.connect(host)
         print(f'->connect to the host: {host}')
@@ -32,5 +32,5 @@ def full(config: Dict[str, Any], server_addr: str = '127.0.0.1') -> bool:
                 if response != part:
                     print(f'!!{response} != {part}: response is not what expected')
                     return False
-        print('##finish test')
+    print('##finish test')
     return True
